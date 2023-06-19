@@ -1,0 +1,91 @@
+---
+title: "Assignment_2"
+author: "Raghavendra"
+date: "2023-06-16"
+output: html_document
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r , echo=FALSE}
+# Section 1: Description of the data.
+
+#   The airline safety dataset being used in this analysis provides valuable information regarding safety measures and incidents related to airlines. This dataset measures various aspects of airline safety, including accident rates, fatalities, incidents, and safety regulations. The data was collected from a combination of sources, such as accident reports, safety audits, regulatory bodies, and airline records.
+
+#The airline-safety dataset format may vary depending on the specific source and compilation method. In general, the dataset is typically stored in a structured format, such as a CSV file, which is a common flat file format for tabular data. Alternatively, it could be stored in a database format like SQL or as a spreadsheet in Excel.
+
+#If the dataset is in flat file format, it might be fixed-width or delimited. Fixed-width files allocate a fixed number of characters for each field, whereas delimited files use specific characters (e.g., comma, tab, or semicolon) to separate the fields. If the dataset is delimited, the specific delimiter used, such as a comma or tab, will be mentioned in the data documentation.
+
+#Binary format requires specialized software to open and access the data. The choice of program depends on the specific binary format used. However, it could involve applications like MATLAB, R, Python libraries, or proprietary software provided by the dataset provider.
+
+
+# Section 2: Reading the data into R
+
+#To read the airline-safety data into R and assign it to a dataframe object, I will be using the read.csv function from the readr package. The read_csv function is a part of the tidyverse collection of packages, which provides a set of tools for data manipulation and analysis.
+
+
+cran_mirror <- "https://cran.r-project.org"
+
+# Set the CRAN mirror
+options(repos = cran_mirror)
+
+install.packages("readr")
+library(readr)
+install.packages("dplyr")
+library(dplyr)
+install.packages("knitr")
+library(knitr)
+
+# Reading the airline-safety data
+
+df <- readr::read_csv("C:/Users/ragha/Documents/syllabus/ANA_515/airline-safety.csv" , show_col_types = FALSE)
+
+#In the code above, I first load the readr package using the library function. Then, I use the read_csv function to read the data from the file "airline-safety.csv" and assign it to the dataframe object df.
+
+#If there are any special options or arguments needed to read the data correctly, such as skipping rows without data or specifying a delimiter, those can be included as additional arguments within the read_csv function. For example, if the dataset has a header row that needs to be skipped, we can use the skip argument like this:
+
+
+df1 <- readr::read_csv("C:/Users/ragha/Documents/syllabus/ANA_515/airline-safety.csv", show_col_types = FALSE, skip = 1)
+
+
+#In this case, the skip = 1 option skips the first row of the CSV file, assuming it contains the header information and not the actual data.
+
+#However, if there are no special options required, the basic read_csv function without any additional arguments will read the data assuming a comma (",") as the delimiter and handle other default settings for parsing the CSV file.
+
+#Section 3 : Clean the data
+
+# Renaming columns
+df2 <- dplyr::rename(df, Airline = airline, Incident_Year_1985_to_1999 = incidents_85_99, Incident_Year_2000_to_2014 = incidents_00_14, Fatalities_2000_to_2014 = fatalities_00_14)
+
+# Subset to keep selected columns
+df3 <- dplyr::select(df2, Airline, Incident_Year_2000_to_2014, Fatalities_2000_to_2014)
+
+# Section 4: Characteristics of the data
+
+# Display number of rows and columns
+cat("This dataframe has", nrow(df3), "rows and", ncol(df3), "columns.")
+
+# Create a table with column names and descriptions
+characteristics_table <- data.frame(Column = colnames(df3), Description = c("Name of the airline", "Type of incident", "Total number of fatalities"))
+
+# Display the table
+knitr::kable(characteristics_table, format = "markdown")
+
+# Section 5: Summary statistics
+
+# Pick three columns for summary statistics
+subset_df <- df2[, c("Fatalities_2000_to_2014", "Incident_Year_2000_to_2014", "Airline")]
+
+# Calculate summary statistics
+summary_stats <- summary(subset_df, na.rm = TRUE)
+
+# Assign summary to a new object
+summary_table <- as.data.frame(summary_stats)
+
+# Display the summary table
+summary_table
+```
+
